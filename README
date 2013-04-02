@@ -1,0 +1,20 @@
+Amalgam is a system that allows you to generate collections of files that work
+with conventional tools but take up minimal extra space on storage.
+
+If you already are archiving files in a file system and don't want to make 
+multiple copies of whole files in order to ship the data somewhere then this
+system is for you.
+
+Amalgam consists of tools that allow you to create and get information about
+'.amalgam' files which contain just the metadata associated with a set of
+files. It also contains a fuse file system that, using amalgam files, will
+dynamically create traditional tar files. With this setup, you can see
+multiple orders of magnitude reduction in storage requirements for temporary
+data collections.
+
+For install instructions, see the INSTALL file.
+
+Tools:
+amalgamfs    - fuse based file system for reading out traditional collections.
+amalgaminfo  - tool to show info about amalgam files.
+amalgambuild - tool to build amalgam files.

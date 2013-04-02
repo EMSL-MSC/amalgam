@@ -1,0 +1,61 @@
+Name: @PACKAGE_NAME@
+Version: @VERSION@
+Release: 1%{?dist}
+Summary: Amalgam.
+Group: System Environment/Base
+License: LGPL
+Source: %{name}-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}
+BuildRequires: fuse-devel, libarchive-devel, glib2-devel, libbuhfsutil-devel, libbuhfsutil, libattr-devel
+Requires: fuse-libs
+
+%description
+Amalgam
+
+%package -n     libamalgam
+Summary: libamalgam shared library
+Group: System Environment/Base
+
+%description -n libamalgam
+This package provides the necessary libraries Amalgam.
+
+%package -n     libamalgam-devel
+Summary: Amalgam development files
+Group: System Environment/Base
+
+%description -n libamalgam-devel
+This package provides the necessary header files and libraries for linking Amalgam.
+
+%prep
+%setup  -q 
+
+%build
+%configure 
+%{__make} %{_smp_mflags}
+
+%install
+DESTDIR="$RPM_BUILD_ROOT" make install
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files -n libamalgam-devel
+%defattr(-,root,root)
+%{_libdir}/libamalgam.la*
+%{_libdir}/libamalgam.a*
+%{_libdir}/libamalgam.so
+%{_includedir}/amalgam/*
+%{_libdir}/pkgconfig/amalgam.pc
+%{_docdir}/%{name}/fileformat.txt
+
+%files -n libamalgam
+%defattr(-,root,root)
+%{_libdir}/libamalgam.so.*
+
+%files
+%defattr(-,root,root)
+%doc README
+%doc %{_docdir}/%{name}/svnver.txt
+%doc %{_docdir}/%{name}/svnbranch.txt
+#%{_bindir}/amalgamfs
+%{_bindir}/*

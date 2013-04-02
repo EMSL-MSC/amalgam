@@ -1,0 +1,36 @@
+The purpose of an amalgam file is to store information about chunks of data such that only the
+bare minimum data needs to be stored to regenerate each chunk, and it can be
+done with minimal overhead.
+
+NOTE: All entries are little endian unless specified otherwise.
+
+Main file format:
+ * [1 * Indexed file structure]
+ * [Data]
+
+Indexed file format:
+ * unsigned int64 size of result file
+ * unsigned int64 size of index (N)
+ * unsigned int64 offset from the begining of file for the location of a prefix. If 0, there is no prefix.
+ * [N * Index entries]
+
+Index entries are made up of the following:
+ * unsigned int64 offset - The start of this chunk in the result file.
+ * unsigned int8 type - The type of entry this is.
+ * unsigned int64 data - Data specific to the type.
+
+The index entry type can be one of the following:
+ * 0 - The chunk will be filled in with '0's.
+ * 1 - Tar header. The index entry data field will be an offset from the begining of the file that points to a file info structure. If there is a prefix, it is not included in the tar filename.
+ * 2 - Raw file. The index entry data field will be an offset from the begining of the file that points to a file info structure. The file name is opened with the prefix added if there is one, and the chunk will be filled with the file's contents.
+ * 3 - Raw file. Same as type 2 except that a null terminated source filename, different from the archive filename to read is appended after the file info structure.
+
+File info structure:
+ * struct stat
+ * null terminated string filename
+
+Future work:
+ * Change struct stat to something more generic and specific.
+ * Make main file format support multiple index file structures.
+ * Add header and versioning bytes.
+ * Add Indexed file type field. First three types would be tar, zip32, and zip64.
